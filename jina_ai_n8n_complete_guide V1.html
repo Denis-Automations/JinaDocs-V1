@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jina AI + n8n: Complete Integration Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .nav {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 2px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+        }
+
+        .section h4 {
+            color: #555;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+        }
+
+        .badge-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .badge-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .badge-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 30px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .footer {
+            background: #2d2d2d;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .section h2 {
+                font-size: 1.5em;
+            }
+
+            .nav-links {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 0.85em;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .toc {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .toc ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .toc li {
+            margin: 8px 0;
+        }
+
+        .toc a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .toc a:hover {
+            color: #764ba2;
+            padding-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Jina AI + n8n Integration</h1>
+            <p>Complete Guide to Using Your 10M Free Tokens</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Updated: December 18, 2025</p>
+        </div>
+
+        <div class="nav">
+            <div class="nav-links">
+                <a href="#overview">Overview</a>
+                <a href="#tokens">Token Allocation</a>
+                <a href="#services">Services & APIs</a>
+                <a href="#n8n-setup">n8n Setup</a>
+                <a href="#workflows">Example Workflows</a>
+                <a href="#best-practices">Best Practices</a>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Overview Section -->
+            <section id="overview" class="section">
+                <h2>📋 Overview</h2>
+                
+                <div class="info-box">
+                    <h4>🎉 Congratulations on Your 10M Free Tokens!</h4>
+                    <p>Jina AI is a <strong>Search Foundation Platform</strong> providing cutting-edge AI models and APIs for:</p>
+                    <ul>
+                        <li><strong>Web Content Extraction</strong> - Convert any URL to clean markdown</li>
+                        <li><strong>Semantic Search</strong> - Advanced embeddings for similarity matching</li>
+                        <li><strong>Document Ranking</strong> - Intelligent reranking for better results</li>
+                        <li><strong>Content Classification</strong> - Zero-shot and few-shot categorization</li>
+                        <li><strong>Deep Research</strong> - AI-powered iterative research with reasoning</li>
+                        <li><strong>Vision-Language Models</strong> - Multimodal image understanding</li>
+                    </ul>
+                </div>
+
+                <div class="success-box">
+                    <h4>✅ What You Get</h4>
+                    <ul>
+                        <li><strong>10,000,000 tokens</strong> shared across all services</li>
+                        <li>Access to <strong>8 powerful APIs</strong></li>
+                        <li>Built-in <strong>n8n integration</strong> with 3 native actions</li>
+                        <li>Multiple models for different use cases</li>
+                        <li>Multimodal capabilities (text, images, code)</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Important Limitations</h4>
+                    <ul>
+                        <li><strong>Non-commercial use only</strong> (upgrade needed for business use)</li>
+                        <li><strong>No token reset</strong> - once depleted, you must purchase more</li>
+                        <li><strong>Rate limits apply</strong> - varies by service (50-2000 RPM)</li>
+                        <li><strong>DeepSearch is expensive</strong> - 50K-500K tokens per query</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Token Allocation Section -->
+            <section id="tokens" class="section">
+                <h2>💰 Your 10M Token Allocation</h2>
+
+                <h3>Token Consumption by Service</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Token Cost</th>
+                            <th>How It's Counted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Reader API</strong></td>
+                            <td>3K-10K per URL</td>
+                            <td>Output length (markdown returned)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Search API</strong></td>
+                            <td>10,000 fixed</td>
+                            <td>Per search request (regardless of results)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Embeddings</strong></td>
+                            <td>Variable</td>
+                            <td>Input tokens only</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reranker</strong></td>
+                            <td>Variable</td>
+                            <td>Query + documents input tokens</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Classifier</strong></td>
+                            <td>Variable</td>
+                            <td>Input tokens × iterations</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Segmenter</strong></td>
+                            <td><span class="badge badge-success">FREE</span></td>
+                            <td>No tokens charged</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DeepSearch</strong></td>
+                            <td>50K-500K</td>
+                            <td>Entire reasoning process</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLM</strong></td>
+                            <td>Variable</td>
+                            <td>Prompt + image processing</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>What 10M Tokens Gets You</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>📄 Reader API</h4>
+                        <p><strong>~1,000 - 3,300 URLs</strong></p>
+                        <p>Assuming 3K-10K tokens per page</p>
+                    </div>
+                    <div class="card">
+                        <h4>🔍 Search API</h4>
+                        <p><strong>~1,000 searches</strong></p>
+                        <p>Fixed 10K tokens per search</p>
+                    </div>
+                    <div class="card">
+                        <h4>🧠 DeepSearch</h4>
+                        <p><strong>20-200 queries</strong></p>
+                        <p>Expensive but comprehensive</p>
+                    </div>
+                    <div class="card">
+                        <h4>🔢 Embeddings</h4>
+                        <p><strong>Millions of operations</strong></p>
+                        <p>For small inputs</p>
+                    </div>
+                </div>
+
+                <h3>Rate Limits (Free Tier)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>RPM (Requests/Min)</th>
+                            <th>TPM (Tokens/Min)</th>
+                            <th>Avg Latency</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Reader API</td>
+                            <td>500</td>
+                            <td>-</td>
+                            <td>7.9s</td>
+                        </tr>
+                        <tr>
+                            <td>Search API</td>
+                            <td>100-1000</td>
+                            <td>-</td>
+                            <td>2.5s</td>
+                        </tr>
+                        <tr>
+                            <td>DeepSearch</td>
+                            <td>50-500</td>
+                            <td>-</td>
+                            <td>56.7s</td>
+                        </tr>
+                        <tr>
+                            <td>Embeddings</td>
+                            <td>500-2000</td>
+                            <td>1M-5M</td>
+                            <td>Variable</td>
+                        </tr>
+                        <tr>
+                            <td>Reranker</td>
+                            <td>500-2000</td>
+                            <td>1M-5M</td>
+                            <td>Variable</td>
+                        </tr>
+                        <tr>
+                            <td>Classifier (Zero-shot)</td>
+                            <td>200-1000</td>
+                            <td>500K-3M</td>
+                            <td>Variable</td>
+                        </tr>
+                        <tr>
+                            <td>Classifier (Few-shot)</td>
+                            <td>20-60</td>
+                            <td>200K-1M</td>
+                            <td>Variable</td>
+                        </tr>
+                        <tr>
+                            <td>Segmenter</td>
+                            <td>200</td>
+                            <td><span class="badge badge-success">FREE</span></td>
+                            <td>0.3s</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Services Section -->
+            <section id="services" class="section">
+                <h2>🛠️ Available Services & APIs</h2>
+
+                <!-- Reader API -->
+                <div class="card">
+                    <h3>1️⃣ Reader API - Web Content Extraction</h3>
+                    <p><span class="badge badge-primary">r.jina.ai</span> <span class="badge badge-info">Output-based tokens</span></p>
+                    
+                    <h4>What It Does</h4>
+                    <ul>
+                        <li>Converts any URL to clean, LLM-friendly Markdown</li>
+                        <li>Removes ads, navigation, and clutter</li>
+                        <li>Extracts main content intelligently</li>
+                        <li>Supports images, links summary, and alt text</li>
+                        <li>Handles JavaScript-rendered pages</li>
+                    </ul>
+
+                    <h4>Use Cases</h4>
+                    <ul>
+                        <li>Blog post extraction for analysis</li>
+                        <li>Competitor website monitoring</li>
+                        <li>Building knowledge bases from web sources</li>
+                        <li>Content aggregation and curation</li>
+                    </ul>
+
+                    <h4>cURL Example</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>curl -X POST 'https://r.jina.ai/' \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -H "X-Return-Format: markdown" \
+  -H "X-With-Links-Summary: true" \
+  -H "X-With-Images-Summary: true" \
+  -d '{
+    "url": "https://example.com"
+  }'</pre>
+                    </div>
+
+                    <h4>n8n HTTP Request Setup</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>{
+  "method": "POST",
+  "url": "https://r.jina.ai/",
+  "authentication": "headerAuth",
+  "headerAuth": {
+    "name": "Authorization",
+    "value": "Bearer YOUR_API_KEY"
+  },
+  "headers": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "X-Return-Format": "markdown",
+    "X-With-Links-Summary": "true"
+  },
+  "body": {
+    "url": "{{ $json.url }}"
+  }
+}</pre>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>Key Headers</h4>
+                        <ul>
+                            <li><code>X-Return-Format</code>: markdown, html, text, screenshot, pageshot</li>
+                            <li><code>X-With-Links-Summary</code>: true/all (extract all links)</li>
+                            <li><code>X-With-Images-Summary</code>: true/all (extract all images)</li>
+                            <li><code>X-Target-Selector</code>: CSS selector to focus on specific elements</li>
+                            <li><code>X-Remove-Selector</code>: CSS selector to exclude elements</li>
+                            <li><code>X-No-Cache</code>: true (bypass cache for fresh content)</li>
+                            <li><code>X-Timeout</code>: Max wait time in seconds</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Search API -->
+                <div class="card">
+                    <h3>2️⃣ Search API - Web Search & Read</h3>
+                    <p><span class="badge badge-primary">s.jina.ai</span> <span class="badge badge-warning">10K tokens per search</span></p>
+                    
+                    <h4>What It Does</h4>
+                    <ul>
+                        <li>Searches the web for your query</li>
+                        <li>Returns top results in LLM-friendly format</li>
+                        <li>Each result includes clean content + metadata</li>
+                        <li>Fixed 10K token cost regardless of results</li>
+                    </ul>
+
+                    <h4>Use Cases</h4>
+                    <ul>
+                        <li>Market research without knowing source URLs</li>
+                        <li>Competitive intelligence gathering</li>
+                        <li>Real-time information retrieval</li>
+                        <li>Automated research on topics</li>
+                    </ul>
+
+                    <h4>cURL Example</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>curl -X POST 'https://s.jina.ai/' \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "q": "best hotels in Kenya 2025",
+    "num": 5,
+    "gl": "us",
+    "hl": "en"
+  }'</pre>
+                    </div>
+
+                    <h4>n8n Setup</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>{
+  "method": "POST",
+  "url": "https://s.jina.ai/",
+  "headers": {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "q": "{{ $json.searchQuery }}",
+    "num": 5,
+    "gl": "us",
+    "hl": "en"
+  }
+}</pre>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>Parameters</h4>
+                        <ul>
+                            <li><code>q</code>: Search query (required)</li>
+                            <li><code>num</code>: Max results to return (default 5)</li>
+                            <li><code>gl</code>: Country code (e.g., "us", "de", "ke")</li>
+                            <li><code>hl</code>: Language code (e.g., "en", "es", "fr")</li>
+                            <li><code>page</code>: Pagination offset</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Embeddings API -->
+                <div class="card">
+                    <h3>3️⃣ Embeddings API - Text/Image to Vectors</h3>
+                    <p><span class="badge badge-primary">api.jina.ai/v1/embeddings</span> <span class="badge badge-info">Input tokens only</span></p>
+                    
+                    <h4>What It Does</h4>
+                    <ul>
+                        <li>Converts text/images to fixed-length vectors</li>
+                        <li>Captures semantic meaning for similarity matching</li>
+                        <li>Supports 100+ languages</li>
+                        <li>Multimodal capabilities (text + images)</li>
+                    </ul>
+
+                    <h4>Available Models</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>Params</th>
+                                <th>Dimensions</th>
+                                <th>Best For</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>jina-embeddings-v4</td>
+                                <td>3.8B</td>
+                                <td>2048</td>
+                                <td>Multimodal (text + images + PDFs)</td>
+                            </tr>
+                            <tr>
+                                <td>jina-embeddings-v3</td>
+                                <td>570M</td>
+                                <td>1024</td>
+                                <td>Text only, 100+ languages</td>
+                            </tr>
+                            <tr>
+                                <td>jina-clip-v2</td>
+                                <td>885M</td>
+                                <td>1024</td>
+                                <td>Text-image cross-modal retrieval</td>
+                            </tr>
+                            <tr>
+                                <td>jina-code-embeddings</td>
+                                <td>0.5B/1.5B</td>
+                                <td>768</td>
+                                <td>Code search and matching</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Use Cases</h4>
+                    <ul>
+                        <li>Semantic search engines</li>
+                        <li>Document similarity and clustering</li>
+                        <li>RAG (Retrieval Augmented Generation)</li>
+                        <li>Content recommendation systems</li>
+                        <li>Code search and matching</li>
+                    </ul>
+
+                    <h4>cURL Example - Text Embeddings</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>curl -X POST 'https://api.jina.ai/v1/embeddings' \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "jina-embeddings-v3",
+    "input": [
+      "Hello, world!",
+      "Another text to embed"
+    ],
+    "task": "retrieval.passage",
+    "normalized": true
+  }'</pre>
+                    </div>
+
+                    <h4>cURL Example - Multimodal (Images)</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>curl -X POST 'https://api.jina.ai/v1/embeddings' \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "jina-embeddings-v4",
+    "input": [
+      {"text": "A beautiful sunset"},
+      {"image": "https://example.com/sunset.jpg"},
+      {"image": "base64_encoded_string_here"}
+    ]
+  }'</pre>
+                    </div>
+
+                    <h4>n8n Setup</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>{
+  "method": "POST",
+  "url": "https://api.jina.ai/v1/embeddings",
+  "headers": {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "model": "jina-embeddings-v3",
+    "input": ["{{ $json.text }}"],
+    "task": "retrieval.passage",
+    "normalized": true
+  }
+}</pre>
+                    </div>
+                </div>
+
+                <!-- Reranker API -->
+                <div class="card">
+                    <h3>4️⃣ Reranker API - Improve Search Relevance</h3>
+                    <p><span class="badge badge-primary">api.jina.ai/v1/rerank</span> <span class="badge badge-info">Input tokens only</span></p>
+                    
+                    <h4>What It Does</h4>
+                    <ul>
+                        <li>Refines search results by relevance scoring</li>
+                        <li>More accurate than cosine similarity alone</li>
+                        <li>Supports multilingual ranking</li>
+                        <li>Essential for RAG accuracy</li>
+                    </ul>
+
+                    <h4>Available Models</h4>
+                    <ul>
+                        <li><strong>jina-reranker-v3</strong> (0.6B params): Latest, best general-purpose</li>
+                        <li><strong>jina-reranker-m0</strong> (2.4B params): Multimodal (text + images)</li>
+                        <li><strong>jina-reranker-v2-base-multilingual</strong> (278M params): 100+ languages</li>
+                        <li><strong>jina-colbert-v2</strong> (560M params): ColBERT-style multi-vector</li>
+                    </ul>
+
+                    <h4>Use Cases</h4>
+                    <ul>
+                        <li>Improve RAG context accuracy</li>
+                        <li>Search result refinement</li>
+                        <li>Document filtering by relevance</li>
+                        <li>Question answering systems</li>
+                    </ul>
+
+                    <h4>cURL Example</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>curl -X POST 'https://api.jina.ai/v1/rerank' \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "jina-reranker-v3",
+    "query": "What is semantic search?",
+    "documents": [
+      "Document about machine learning basics",
+      "Document about semantic search and embeddings",
+      "Document about cooking recipes"
+    ],
+    "top_n": 2,
+    "return_documents": true
+  }'</pre>
+                    </div>
+
+                    <h4>n8n Setup</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>{
+  "method": "POST",
+  "url": "https://api.jina.ai/v1/rerank",
+  "headers": {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "model": "jina-reranker-v3",
+    "query": "{{ $json.query }}",
+    "documents": {{ $json.documents }},
+    "top_n": 3,
+    "return_documents": true
+  }
+}</pre>
+                    </div>
+                </div>
+
+                <!-- Classifier API -->
+                <div class="card">
+                    <h3>5️⃣ Classifier API - Zero-Shot Categorization</h3>
+                    <p><span class="badge badge-primary">api.jina.ai/v1/classify</span> <span class="badge badge-info">Input + labels tokens</span></p>
+                    
+                    <h4>What It Does</h4>
+                    <ul>
+                        <li>Categorizes text or images without training</li>
+                        <li>Zero-shot: Define labels on the fly</li>
+                        <li>Few-shot: Train with minimal examples</li>
+                        <li>Supports up to 256 classes</li>
+                    </ul>
+
+                    <h4>Use Cases</h4>
+                    <ul>
+                        <li>Sentiment analysis (positive/negative/neutral)</li>
+                        <li>Content categorization</li>
+                        <li>Email/ticket routing</li>
+                        <li>Image classification</li>
+                        <li>Intent detection</li>
+                    </ul>
+
+                    <h4>cURL Example - Text Classification</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>curl -X POST 'https://api.jina.ai/v1/classify' \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "jina-embeddings-v3",
+    "input": [
+      "This hotel has excellent service!",
+      "Terrible experience, very disappointed"
+    ],
+    "labels": [
+      "positive",
+      "negative",
+      "neutral"
+    ]
+  }'</pre>
+                    </div>
+
+                    <h4>cURL Example - Image Classification</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>curl -X POST 'https://api.jina.ai/v1/classify' \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "jina-clip-v2",
+    "input": [
+      {"image": "https://example.com/hotel1.jpg"}
+    ],
+    "labels": [
+      "luxury_hotel",
+      "budget_hotel",
+      "resort"
+    ]
+  }'</pre>
+                    </div>
+
+                    <h4>n8n Setup</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>{
+  "method": "POST",
+  "url": "https://api.jina.ai/v1/classify",
+  "headers": {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "model": "jina-embeddings-v3",
+    "input": [{"text": "{{ $json.review }}"}],
+    "labels": ["positive", "negative", "neutral"]
+  }
+}</pre>
+                    </div>
+                </div>
+
+                <!-- Segmenter API -->
+                <div class="card">
+                    <h3>6️⃣ Segmenter API - Text Chunking</h3>
+                    <p><span class="badge badge-primary">segment.jina.ai</span> <span class="badge badge-success">FREE - No tokens</span></p>
+                    
+                    <h4>What It Does</h4>
+                    <ul>
+                        <li>Counts tokens in text</li>
+                        <li>Chunks long documents intelligently</li>
+                        <li>Respects semantic boundaries</li>
+                        <li>Supports multiple tokenizers</li>
+                        <li><strong>100% FREE - No token charges!</strong></li>
+                    </ul>
+
+                    <h4>Use Cases</h4>
+                    <ul>
+                        <li>Prepare documents for embeddings</li>
+                        <li>Token counting for cost estimation</li>
+                        <li>Chunking for RAG systems</li>
+                        <li>Text preprocessing</li>
+                    </ul>
+
+                    <h4>cURL Example</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>curl -X POST 'https://segment.jina.ai/' \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "Your long text content here...",
+    "tokenizer": "cl100k_base",
+    "return_tokens": true,
+    "return_chunks": true,
+    "max_chunk_length": 1000
+  }'</pre>
+                    </div>
+
+                    <h4>Available Tokenizers</h4>
+                    <ul>
+                        <li><code>cl100k_base</code>: GPT-4, GPT-3.5-turbo</li>
+                        <li><code>o200k_base</code>: GPT-4o</li>
+                        <li><code>p50k_base</code>, <code>r50k_base</code>: Older GPT models</li>
+                        <li><code>gpt2</code>: GPT-2 tokenizer</li>
+                    </ul>
+
+                    <h4>n8n Setup</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>{
+  "method": "POST",
+  "url": "https://segment.jina.ai/",
+  "headers": {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "content": "{{ $json.longText }}",
+    "return_chunks": true,
+    "max_chunk_length": 500,
+    "tokenizer": "cl100k_base"
+  }
+}</pre>
+                    </div>
+                </div>
+
+                <!-- DeepSearch API -->
+                <div class="card">
+                    <h3>7️⃣ DeepSearch API - AI Research Agent</h3>
+                    <p><span class="badge badge-primary">deepsearch.jina.ai</span> <span class="badge badge-warning">50K-500K tokens per query</span></p>
+                    
+                    <h4>What It Does</h4>
+                    <ul>
+                        <li>Performs multi-step iterative research</li>
+                        <li>Searches, reads, and reasons autonomously</li>
+                        <li>Cross-validates information from sources</li>
+                        <li>Generates comprehensive research reports</li>
+                        <li>Self-evaluates for reliability</li>
+                    </ul>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Token Warning</h4>
+                        <p><strong>DeepSearch is expensive!</strong> Each query can consume 50,000 to 500,000 tokens depending on complexity. Use sparingly for high-value research tasks.</p>
+                    </div>
+
+                    <h4>Use Cases</h4>
+                    <ul>
+                        <li>Complex market research</li>
+                        <li>Competitive intelligence reports</li>
+                        <li>Academic research assistance</li>
+                        <li>Comprehensive topic analysis</li>
+                    </ul>
+
+                    <h4>cURL Example</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>curl -X POST 'https://deepsearch.jina.ai/v1/chat/completions' \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "jina-deepsearch-v1",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Research sustainable hospitality practices in Kenya for 2025"
+      }
+    ],
+    "reasoning_effort": "medium",
+    "stream": false,
+    "max_returned_urls": 5
+  }'</pre>
+                    </div>
+
+                    <h4>Parameters</h4>
+                    <ul>
+                        <li><code>reasoning_effort</code>: low, medium, high (affects token usage)</li>
+                        <li><code>budget_tokens</code>: Limit total token usage</li>
+                        <li><code>max_attempts</code>: Number of retry attempts</li>
+                        <li><code>stream</code>: true for real-time streaming responses</li>
+                        <li><code>max_returned_urls</code>: Limit number of source URLs</li>
+                    </ul>
+
+                    <h4>n8n Setup</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>{
+  "method": "POST",
+  "url": "https://deepsearch.jina.ai/v1/chat/completions",
+  "headers": {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "model": "jina-deepsearch-v1",
+    "messages": [
+      {
+        "role": "user",
+        "content": "{{ $json.researchQuery }}"
+      }
+    ],
+    "reasoning_effort": "low",
+    "stream": false,
+    "budget_tokens": 100000
+  }
+}</pre>
+                    </div>
+                </div>
+
+                <!-- VLM API -->
+                <div class="card">
+                    <h3>8️⃣ VLM API - Vision-Language Model</h3>
+                    <p><span class="badge badge-primary">api-beta-vlm.jina.ai</span> <span class="badge badge-warning">Cold starts 30-60s</span></p>
+                    
+                    <h4>What It Does</h4>
+                    <ul>
+                        <li>Understands and describes images</li>
+                        <li>Visual question answering</li>
+                        <li>Multimodal conversations</li>
+                        <li>OpenAI-compatible API format</li>
+                    </ul>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Performance Note</h4>
+                        <p><strong>Cold starts may take 30-60 seconds.</strong> If you receive 503 errors, retry after a short delay. The model needs to warm up on first use.</p>
+                    </div>
+
+                    <h4>Use Cases</h4>
+                    <ul>
+                        <li>Image analysis and description</li>
+                        <li>Visual quality control</li>
+                        <li>Content moderation</li>
+                        <li>Product image analysis</li>
+                    </ul>
+
+                    <h4>cURL Example</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>curl -X POST 'https://api-beta-vlm.jina.ai/v1/chat/completions' \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "jina-vlm",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "What is in this image?"
+          },
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "https://example.com/image.jpg"
+            }
+          }
+        ]
+      }
+    ]
+  }'</pre>
+                    </div>
+
+                    <h4>n8n Setup</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>{
+  "method": "POST",
+  "url": "https://api-beta-vlm.jina.ai/v1/chat/completions",
+  "headers": {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "model": "jina-vlm",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "Describe this image in detail"
+          },
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "{{ $json.imageUrl }}"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- n8n Setup Section -->
+            <section id="n8n-setup" class="section">
+                <h2>⚙️ n8n Integration Setup</h2>
+
+                <h3>Step 1: Get Your API Key</h3>
+                <ol>
+                    <li>Visit <a href="https://jina.ai/" target="_blank">https://jina.ai/</a></li>
+                    <li>Click on <strong>API</strong> in the navigation</li>
+                    <li>Go to <strong>API KEY & BILLING</strong></li>
+                    <li>Copy your API key (starts with 10M free tokens)</li>
+                </ol>
+
+                <h3>Step 2: Configure Credentials in n8n</h3>
+
+                <h4>Method 1: Using Built-in Jina AI Node</h4>
+                <ol>
+                    <li>Add <strong>Jina AI</strong> node to your workflow</li>
+                    <li>Click on <strong>Credentials</strong> dropdown</li>
+                    <li>Select <strong>Create New</strong></li>
+                    <li>Paste your API key</li>
+                    <li>Click <strong>Save</strong></li>
+                </ol>
+
+                <h4>Method 2: Using HTTP Request Node with Header Auth</h4>
+                <ol>
+                    <li>Add <strong>HTTP Request</strong> node</li>
+                    <li>Go to <strong>Authentication</strong> section</li>
+                    <li>Choose <strong>Generic Credential Type → Header Auth</strong></li>
+                    <li>Configure:
+                        <ul>
+                            <li>Name: <code>Authorization</code></li>
+                            <li>Value: <code>Bearer YOUR_JINA_API_KEY</code></li>
+                        </ul>
+                    </li>
+                    <li>Save credential</li>
+                </ol>
+
+                <h3>Step 3: Built-in n8n Actions</h3>
+                <p>n8n provides <strong>3 native Jina AI actions</strong> without HTTP configuration:</p>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>Action 1: Read</h4>
+                        <ul>
+                            <li>Extracts content from URL</li>
+                            <li>Converts to LLM-friendly format</li>
+                            <li>Direct node without HTTP setup</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Action 2: Search</h4>
+                        <ul>
+                            <li>Performs web search</li>
+                            <li>Returns top results as clean text</li>
+                            <li>Perfect for research workflows</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Action 3: Deep Research</h4>
+                        <ul>
+                            <li>Iterative research and reasoning</li>
+                            <li>Generates comprehensive reports</li>
+                            <li>Analyzes complex topics</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Testing Your Setup</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre># Test with a simple Reader API call
+curl -X POST 'https://r.jina.ai/' \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://example.com"
+  }'</pre>
+                </div>
+
+                <div class="success-box">
+                    <h4>✅ If successful, you should see:</h4>
+                    <ul>
+                        <li>HTTP 200 response</li>
+                        <li>JSON with <code>data.content</code> field</li>
+                        <li>Clean markdown content</li>
+                        <li>Token usage in <code>data.usage</code></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Workflows Section -->
+            <section id="workflows" class="section">
+                <h2>🔄 Example n8n Workflows</h2>
+
+                <div class="card">
+                    <h3>Workflow 1: Automated Content Monitoring</h3>
+                    <h4>Use Case: Monitor competitor blog for new content</h4>
+                    
+                    <div class="code-block">
+                        <pre>1. Schedule Trigger (daily at 9 AM)
+   ↓
+2. Jina AI Reader (read competitor blog)
+   ↓
+3. IF node (check for new content)
+   ↓ Yes
+4. OpenAI (summarize changes)
+   ↓
+5. Gmail (send summary email to team)
+   ↓
+6. Google Sheets (log entry)</pre>
+                    </div>
+
+                    <h4>Token Cost</h4>
+                    <p>~5K-10K tokens per day (Reader API)</p>
+                </div>
+
+                <div class="card">
+                    <h3>Workflow 2: Semantic Search & RAG System</h3>
+                    <h4>Use Case: Build searchable knowledge base</h4>
+                    
+                    <div class="code-block">
+                        <pre>1. Webhook Trigger (receive question)
+   ↓
+2. Jina AI Embeddings (embed query)
+   ↓
+3. Vector Database (search similar docs)
+   ↓
+4. Jina AI Reranker (rank by relevance)
+   ↓
+5. OpenAI (generate answer with context)
+   ↓
+6. Return response (webhook response)</pre>
+                    </div>
+
+                    <h4>Token Cost</h4>
+                    <p>~2K-5K tokens per query</p>
+                </div>
+
+                <div class="card">
+                    <h3>Workflow 3: Web Scraping Pipeline</h3>
+                    <h4>Use Case: Extract and categorize content from URLs</h4>
+                    
+                    <div class="code-block">
+                        <pre>1. Google Sheets (list of URLs)
+   ↓
+2. Loop through URLs
+   ↓
+3. Jina AI Reader (extract content)
+   ↓
+4. Jina AI Segmenter (chunk text - FREE)
+   ↓
+5. Jina AI Classifier (categorize content)
+   ↓
+6. Jina AI Embeddings (create vectors)
+   ↓
+7. Pinecone/Vector DB (store)
+   ↓
+8. Google Sheets (update status)</pre>
+                    </div>
+
+                    <h4>Token Cost</h4>
+                    <p>~10K-15K tokens per URL (Reader + Classifier + Embeddings)</p>
+                </div>
+
+                <div class="card">
+                    <h3>Workflow 4: Review Sentiment Analysis</h3>
+                    <h4>Use Case: Auto-route customer reviews</h4>
+                    
+                    <div class="code-block">
+                        <pre>1. Webhook (new review submitted)
+   ↓
+2. Jina AI Classifier (sentiment: positive/negative/neutral)
+   ↓
+3. Switch Node (route by category)
+   ├─ Positive → Marketing team notification
+   ├─ Negative → Management alert email
+   └─ Neutral → Archive in database
+   ↓
+4. All → Update CRM with sentiment tag</pre>
+                    </div>
+
+                    <h4>Token Cost</h4>
+                    <p>~500-1K tokens per review</p>
+                </div>
+
+                <div class="card">
+                    <h3>Workflow 5: Deep Market Research</h3>
+                    <h4>Use Case: Monthly competitive analysis</h4>
+                    
+                    <div class="code-block">
+                        <pre>1. Schedule Trigger (monthly on 1st)
+   ↓
+2. Jina AI DeepSearch (research query)
+   ↓
+3. Wait node (60 seconds for completion)
+   ↓
+4. Jina AI Segmenter (chunk report - FREE)
+   ↓
+5. Jina AI Embeddings (vectorize chunks)
+   ↓
+6. Store in Vector Database
+   ↓
+7. Format as PDF/Document
+   ↓
+8. Email to stakeholders
+   ↓
+9. Archive in Google Drive</pre>
+                    </div>
+
+                    <h4>Token Cost</h4>
+                    <p>~100K-500K tokens per research query (DeepSearch is expensive!)</p>
+                </div>
+
+                <div class="card">
+                    <h3>Workflow 6: Image Content Moderation</h3>
+                    <h4>Use Case: Analyze uploaded images</h4>
+                    
+                    <div class="code-block">
+                        <pre>1. Webhook (image upload event)
+   ↓
+2. Jina AI VLM (analyze image content)
+   ↓
+3. Jina AI Classifier (categorize: safe/unsafe)
+   ↓
+4. IF node (check category)
+   ├─ Safe → Approve and publish
+   └─ Unsafe → Alert moderator team
+   ↓
+5. Log decision in database</pre>
+                    </div>
+
+                    <h4>Token Cost</h4>
+                    <p>~2K-5K tokens per image</p>
+                </div>
+            </section>
+
+            <!-- Best Practices Section -->
+            <section id="best-practices" class="section">
+                <h2>✨ Best Practices & Tips</h2>
+
+                <h3>Token Management</h3>
+                <div class="card">
+                    <h4>Monitor Your Usage</h4>
+                    <ul>
+                        <li>Check token balance at <a href="https://jina.ai/" target="_blank">jina.ai</a> → API KEY & BILLING</li>
+                        <li>Each API response includes <code>usage.tokens</code> field</li>
+                        <li>Track usage in n8n workflows using Set node</li>
+                    </ul>
+
+                    <h4>n8n Token Tracking Template</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>HTTP Request (Jina API)
+  ↓
+Set Node:
+  - url: {{ $json.data.url }}
+  - tokens_used: {{ $json.data.usage.tokens }}
+  - timestamp: {{ $now }}
+  - service: "reader_api"
+  ↓
+Append to Google Sheets (usage log)</pre>
+                    </div>
+                </div>
+
+                <h3>Optimize Token Usage</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>Reader API</h4>
+                        <ul>
+                            <li>Use CSS selectors (<code>X-Target-Selector</code>) to extract only needed content</li>
+                            <li>Remove unwanted sections with <code>X-Remove-Selector</code></li>
+                            <li>Avoid ReaderLM-v2 unless necessary (costs 3x tokens)</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Search API</h4>
+                        <ul>
+                            <li>Minimize number of results (<code>num</code> parameter)</li>
+                            <li>Each search costs 10K tokens regardless of results</li>
+                            <li>Cache results when possible</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>DeepSearch</h4>
+                        <ul>
+                            <li>Use <code>low</code> reasoning effort to save tokens</li>
+                            <li>Set <code>budget_tokens</code> limit</li>
+                            <li>Reserve for high-value research only</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Embeddings</h4>
+                        <ul>
+                            <li>Batch multiple inputs in one request</li>
+                            <li>Use Segmenter (FREE) to chunk before embedding</li>
+                            <li>Choose appropriate model size</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Handle Rate Limits</h3>
+                <div class="card">
+                    <h4>Add Delays in n8n</h4>
+                    <ul>
+                        <li>Between API calls: 100-200ms delay</li>
+                        <li>After high-volume operations: 1-2 second delay</li>
+                        <li>Use <strong>Wait</strong> node in n8n</li>
+                    </ul>
+
+                    <h4>Error Handling</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre>Try Node:
+  - HTTP Request (Jina API)
+Catch Node (on error):
+  - IF node (check if 429 rate limit)
+    ↓ Yes
+  - Wait node (exponential backoff)
+  - Retry HTTP Request
+    ↓ No
+  - Log error
+  - Send alert</pre>
+                    </div>
+
+                    <h4>Common Error Codes</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Error</th>
+                                <th>Cause</th>
+                                <th>Solution</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>401</td>
+                                <td>Invalid API key</td>
+                                <td>Check authorization header</td>
+                            </tr>
+                            <tr>
+                                <td>429</td>
+                                <td>Rate limit exceeded</td>
+                                <td>Add delay nodes, implement backoff</td>
+                            </tr>
+                            <tr>
+                                <td>403</td>
+                                <td>Commercial use on free tier</td>
+                                <td>Upgrade to paid tier</td>
+                            </tr>
+                            <tr>
+                                <td>500</td>
+                                <td>Server error</td>
+                                <td>Retry with exponential backoff</td>
+                            </tr>
+                            <tr>
+                                <td>503</td>
+                                <td>Service unavailable (VLM cold start)</td>
+                                <td>Retry after 30-60 seconds</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Security Best Practices</h3>
+                <div class="card">
+                    <ul>
+                        <li>Store API keys in n8n environment variables, never hardcode</li>
+                        <li>Use n8n credential system for API key management</li>
+                        <li>Regularly rotate API keys</li>
+                        <li>Monitor usage for unusual patterns</li>
+                        <li>Set up alerts for token threshold (e.g., 80% usage)</li>
+                    </ul>
+                </div>
+
+                <h3>Performance Tips</h3>
+                <div class="card">
+                    <ul>
+                        <li><strong>Cache results</strong>: Use <code>X-No-Cache: false</code> when appropriate</li>
+                        <li><strong>Parallel processing</strong>: Use n8n's Split In Batches for multiple URLs</li>
+                        <li><strong>Segmenter is FREE</strong>: Always use it before embeddings</li>
+                        <li><strong>Reranker after search</strong>: Improves RAG accuracy significantly</li>
+                        <li><strong>Batch embeddings</strong>: Process multiple texts in one API call</li>
+                    </ul>
+                </div>
+
+                <h3>Workflow Design Patterns</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>Pattern 1: Extract → Process → Store</h4>
+                        <p>Reader → Segmenter → Embeddings → Vector DB</p>
+                        <p><strong>Good for:</strong> Building knowledge bases</p>
+                    </div>
+                    <div class="card">
+                        <h4>Pattern 2: Search → Rank → Generate</h4>
+                        <p>Search → Reranker → LLM</p>
+                        <p><strong>Good for:</strong> RAG systems</p>
+                    </div>
+                    <div class="card">
+                        <h4>Pattern 3: Classify → Route → Act</h4>
+                        <p>Classifier → Switch → Different Actions</p>
+                        <p><strong>Good for:</strong> Automation workflows</p>
+                    </div>
+                    <div class="card">
+                        <h4>Pattern 4: Research → Format → Deliver</h4>
+                        <p>DeepSearch → Format → Email/Store</p>
+                        <p><strong>Good for:</strong> Periodic reports</p>
+                    </div>
+                </div>
+
+                <h3>Quick Start Checklist</h3>
+                <div class="success-box">
+                    <ul>
+                        <li>☐ Get API key from <a href="https://jina.ai/" target="_blank">jina.ai</a></li>
+                        <li>☐ Add credentials to n8n</li>
+                        <li>☐ Test Reader API with a simple URL</li>
+                        <li>☐ Try Search API with a query</li>
+                        <li>☐ Explore Embeddings for your use case</li>
+                        <li>☐ Build your first automation workflow</li>
+                        <li>☐ Set up token usage monitoring</li>
+                        <li>☐ Plan for token top-up if needed</li>
+                    </ul>
+                </div>
+
+                <h3>Common Pitfalls to Avoid</h3>
+                <div class="warning-box">
+                    <ul>
+                        <li>❌ <strong>Don't</strong> use DeepSearch for simple queries (too expensive)</li>
+                        <li>❌ <strong>Don't</strong> ignore rate limits (add delays)</li>
+                        <li>❌ <strong>Don't</strong> embed without segmenting first (inefficient)</li>
+                        <li>❌ <strong>Don't</strong> forget to track token usage</li>
+                        <li>❌ <strong>Don't</strong> use Reader for data you can get via API</li>
+                        <li>❌ <strong>Don't</strong> chain multiple Search calls without caching</li>
+                        <li>✅ <strong>Do</strong> use Segmenter (it's free!)</li>
+                        <li>✅ <strong>Do</strong> batch requests when possible</li>
+                        <li>✅ <strong>Do</strong> implement error handling and retries</li>
+                        <li>✅ <strong>Do</strong> monitor your token balance regularly</li>
+                    </ul>
+                </div>
+
+                <h3>Resources & Documentation</h3>
+                <div class="card">
+                    <h4>Official Resources</h4>
+                    <ul>
+                        <li><strong>Jina AI Homepage:</strong> <a href="https://jina.ai/" target="_blank">https://jina.ai/</a></li>
+                        <li><strong>API Documentation:</strong> <a href="https://docs.jina.ai/" target="_blank">https://docs.jina.ai/</a></li>
+                        <li><strong>n8n Jina AI Node:</strong> <a href="https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.jinaai/" target="_blank">n8n docs</a></li>
+                        <li><strong>Status Page:</strong> <a href="https://status.jina.ai/" target="_blank">https://status.jina.ai/</a></li>
+                    </ul>
+
+                    <h4>Community & Support</h4>
+                    <ul>
+                        <li><strong>n8n Community:</strong> <a href="https://community.n8n.io/" target="_blank">community.n8n.io</a></li>
+                        <li><strong>YouTube Tutorials:</strong> Search "Jina AI n8n"</li>
+                        <li><strong>Contact Sales:</strong> For commercial pricing</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Summary Section -->
+            <section class="section">
+                <h2>📊 Summary & Key Takeaways</h2>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>✅ What You Have</h4>
+                        <ul>
+                            <li>10,000,000 free tokens</li>
+                            <li>8 powerful APIs</li>
+                            <li>Non-commercial use</li>
+                            <li>Perfect for learning & automation</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>⚠️ Limitations</h4>
+                        <ul>
+                            <li>Non-commercial only</li>
+                            <li>No token reset</li>
+                            <li>Rate limits enforced</li>
+                            <li>DeepSearch is expensive</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>🚀 Best for</h4>
+                        <ul>
+                            <li>Content extraction & monitoring</li>
+                            <li>Semantic search systems</li>
+                            <li>Automated categorization</li>
+                            <li>Research & analysis</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>💡 Pro Tips</h4>
+                        <ul>
+                            <li>Start with Reader API</li>
+                            <li>Use Segmenter (it's free!)</li>
+                            <li>Monitor token usage</li>
+                            <li>Plan for upgrade when ready</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h4>🎯 Recommended Workflow for Most Users</h4>
+                    <div class="code-block">
+                        <pre>Content Research/Extraction
+     ↓
+Reader API (Extract clean content)
+     ↓
+Segmenter (Chunk text - FREE)
+     ↓
+Embeddings (Vectorize for search)
+     ↓
+Store in Vector Database
+     ↓
+Reranker (Improve quality when querying)
+     ↓
+LLM (Generate insights/answers)
+     ↓
+Deliver Results (Email, Slack, Database)</pre>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h4>🔮 Token Estimation for 1 Month of Active Use</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Operation</th>
+                                <th>Frequency</th>
+                                <th>Monthly Tokens</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Reader (5 URLs/day)</td>
+                                <td>150 URLs/month</td>
+                                <td>450K - 1.5M</td>
+                            </tr>
+                            <tr>
+                                <td>Search (3/day)</td>
+                                <td>90 searches/month</td>
+                                <td>900K</td>
+                            </tr>
+                            <tr>
+                                <td>Embeddings (10 docs/day)</td>
+                                <td>300 docs/month</td>
+                                <td>30K - 50K</td>
+                            </tr>
+                            <tr>
+                                <td>Classifier (20/day)</td>
+                                <td>600 classifications/month</td>
+                                <td>40K - 100K</td>
+                            </tr>
+                            <tr>
+                                <td>DeepSearch (1/week)</td>
+                                <td>4 queries/month</td>
+                                <td>200K - 2M</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Estimate</strong></td>
+                                <td>-</td>
+                                <td><strong>~2M - 5M tokens/month</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p><strong>Your 10M tokens can support approximately 2-5 months of active use!</strong></p>
+                </div>
+            </section>
+        </div>
+
+        <div class="footer">
+            <h3>Happy Automating! 🚀</h3>
+            <p>With Jina AI + n8n, you have a powerful combination for web scraping, content extraction, semantic search, and AI-powered research.</p>
+            <p style="margin-top: 20px;">
+                <strong>Get Started:</strong> 
+                <a href="https://jina.ai/" target="_blank">Jina AI</a> | 
+                <a href="https://docs.jina.ai/" target="_blank">Documentation</a> | 
+                <a href="https://n8n.io/" target="_blank">n8n</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">
+                Last Updated: December 18, 2025
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                button.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#667eea';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                button.textContent = '✗ Failed';
+                button.style.background = '#dc3545';
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.style.background = '#667eea';
+                }, 2000);
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
